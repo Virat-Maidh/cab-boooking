@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,385 +9,652 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import {
   Car,
-  Sparkles,
   Star,
-  Phone,
   Shield,
   Bike,
-  Clock3,
-  Navigation,
   BadgeCheck,
   Menu,
   X,
-  ArrowUpRight,
-  Globe,
-  Send,
-  Link2,
+  MapPin,
+  Quote,
+  Zap,
+  Crown,
+  PlayCircle,
+  UserCircle2,
+  Heart,
+  ChevronDown,
+  Navigation,
+  Calendar,
+  PhoneCall,
+  Clock3,
+  Sparkles,
+  TrendingUp,
+  ArrowRight,
+  MapPinned,
+  Headphones,
+  Wifi,
+  Music4,
+  Coffee,
 } from 'lucide-react';
 
 export default function Home() {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [fleetOpen, setFleetOpen] = useState(false);
 
-  const slides = [
+  const [bookingStatus, setBookingStatus] = useState<'idle' | 'searching' | 'found' | 'arriving'>('idle');
+
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [selectedRide, setSelectedRide] = useState('Premium');
+
+  const [pickup, setPickup] = useState('');
+  const [destination, setDestination] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('UPI');
+
+  const [loadingScreen, setLoadingScreen] = useState(true);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const [eta, setEta] = useState(4);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const heroSlides = [
     {
-      title: 'FAST &',
-      subtitle: 'SAFE',
-      // Porsche image with dark tone for matching the aesthetic
-      image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=1600&auto=format&fit=crop',
+      title: 'FAST & SAFE',
+      subtitle: 'Luxury Ride Experience',
+      image:
+        'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1600&auto=format&fit=crop',
     },
     {
-      title: 'LUXURY',
-      subtitle: 'RIDES',
-      image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1600&auto=format&fit=crop',
+      title: 'PREMIUM RIDES',
+      subtitle: 'Elite Chauffeur Service',
+      image:
+        'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1600&auto=format&fit=crop',
+    },
+    {
+      title: 'LIVE TRACKING',
+      subtitle: 'Realtime Smart Navigation',
+      image:
+        'https://images.unsplash.com/photo-1489824904134-891ab64532f1?q=80&w=1600&auto=format&fit=crop',
     },
   ];
 
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoadingScreen(false);
+    }, 2200);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
+    const slider = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(slider);
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 6000);
+      setEta((prev) => (prev <= 1 ? 4 : prev - 1));
+    }, 2000);
     return () => clearInterval(interval);
-  }, [slides.length]);
+  }, []);
 
-  const stats = [
-    { value: '10K+', label: 'Happy Riders', icon: Star, color: 'text-pink-500' },
-    { value: '500+', label: 'Luxury Cars', icon: Car, color: 'text-pink-500' },
-    { value: '24/7', label: 'Support', icon: Phone, color: 'text-pink-500' },
-    { value: '4.9', label: 'Rating', icon: Shield, color: 'text-pink-500' },
-  ];
+  const startBookingFlow = () => {
+    setBookingStatus('searching');
+    setTimeout(() => {
+      setBookingStatus('found');
+      setTimeout(() => {
+        setBookingStatus('arriving');
+      }, 4000);
+    }, 3000);
+  };
 
-  const features = [
-    { title: 'Instant Booking', icon: Clock3, desc: 'Premium travel experience with safety and speed.' },
-    { title: 'Live Tracking', icon: Navigation, desc: 'Realtime GPS integration to trace your executive cab.' },
-    { title: 'Verified Drivers', icon: BadgeCheck, desc: 'Top-tier certified professional chauffeurs at your service.' },
-    { title: 'Bike & Cab', icon: Bike, desc: 'Flexible options tailored from swift bikes to luxury sedans.' },
-  ];
+  const toggleFavorite = (name: string) => {
+    setFavorites((prev) =>
+      prev.includes(name)
+        ? prev.filter((item) => item !== name)
+        : [...prev, name]
+    );
+  };
 
-  // Animation variants for smooth orchestration
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
+  const drivers = [
+    {
+      name: 'Rahul Kumar',
+      city: 'Delhi',
+      rating: 4.9,
+      price: 299,
+      avatar: 'RK',
+      gradient: 'from-amber-500 to-orange-600',
+      car: 'Honda City',
+      exp: '5 yrs',
     },
-  };
+    {
+      name: 'Amit Singh',
+      city: 'Mumbai',
+      rating: 4.8,
+      price: 149,
+      avatar: 'AS',
+      gradient: 'from-cyan-500 to-blue-600',
+      car: 'Toyota Camry',
+      exp: '4 yrs',
+    },
+    {
+      name: 'Vikram Rao',
+      city: 'Bangalore',
+      rating: 5,
+      price: 599,
+      avatar: 'VR',
+      gradient: 'from-pink-500 to-rose-600',
+      car: 'Mercedes S-Class',
+      exp: '7 yrs',
+    },
+  ];
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } },
-  };
+  const testimonials = [
+    {
+      name: 'Arjun Mehta',
+      city: 'Mumbai',
+      text: 'Best luxury ride experience ever.',
+    },
+    {
+      name: 'Priya Sharma',
+      city: 'Delhi',
+      text: 'Live tracking and premium cars are amazing.',
+    },
+    {
+      name: 'Rohit Verma',
+      city: 'Bangalore',
+      text: 'Feels like a premium international ride app.',
+    },
+  ];
+
+  const ridePlans = [
+    { name: 'Economy', price: '149', icon: Bike },
+    { name: 'Premium', price: '299', icon: Car },
+    { name: 'Luxury', price: '599', icon: Crown },
+  ];
+
+  const faqs = [
+    {
+      q: 'How do I cancel my booking?',
+      a: 'You can cancel your ride anytime directly from the booking dashboard.',
+    },
+    {
+      q: 'Are CABGO drivers verified?',
+      a: 'Yes. Every chauffeur goes through verification and security checks.',
+    },
+    {
+      q: 'Can I pre-book a luxury ride?',
+      a: 'Yes, you can schedule rides up to 7 days in advance.',
+    },
+  ];
+
+  const fleetCards = [
+    {
+      image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?q=80&w=1200&auto=format&fit=crop',
+      title: 'Economy',
+      desc: 'Affordable daily rides',
+      icon: <Bike className="text-cyan-400" />,
+      btnClass: 'bg-cyan-500 text-black font-black py-3 rounded-xl',
+      borderClass: 'border border-white/10',
+      ride: 'Economy',
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1200&auto=format&fit=crop',
+      title: 'Premium',
+      desc: 'Executive sedan experience',
+      icon: <Car className="text-amber-400" />,
+      btnClass: 'bg-gradient-to-r from-amber-500 to-orange-500 text-black font-black py-3 rounded-xl',
+      borderClass: 'border-2 border-amber-500',
+      ride: 'Premium',
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=1200&auto=format&fit=crop',
+      title: 'Luxury',
+      desc: 'VIP chauffeur rides',
+      icon: <Crown className="text-pink-400" />,
+      btnClass: 'bg-gradient-to-r from-pink-500 to-rose-500 text-white font-black py-3 rounded-xl',
+      borderClass: 'border border-white/10',
+      ride: 'Luxury',
+    },
+  ];
 
   return (
-    <motion.main
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen bg-[#070708] text-white relative font-sans overflow-x-hidden selection:bg-amber-500 selection:text-black"
-    >
-      {/* REAL DESIGN GRID PATTERN */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
-      <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-pink-500/10 blur-[160px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[-10%] w-[600px] h-[600px] bg-cyan-500/10 blur-[160px] rounded-full pointer-events-none" />
+    <main className="min-h-screen bg-[#070708] text-white overflow-x-hidden font-sans">
+
+      {/* LOADER */}
+      <AnimatePresence>
+        {loadingScreen && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[999] bg-black flex flex-col items-center justify-center"
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
+              className="w-24 h-24 rounded-full border-4 border-zinc-800 border-t-amber-500"
+            />
+            <h1 className="text-5xl font-black text-amber-500 mt-8">CABGO</h1>
+            <p className="text-zinc-500 mt-2">Premium Ride Experience</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* STATUS */}
+      <AnimatePresence>
+        {bookingStatus !== 'idle' && (
+          <motion.div
+            initial={{ y: -80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -80, opacity: 0 }}
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-[999]"
+          >
+            <div className="bg-[#111113]/90 border border-white/10 px-6 py-4 rounded-2xl backdrop-blur-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
+                <div>
+                  <p className="font-bold text-sm">
+                    {bookingStatus === 'searching' && 'Searching nearby drivers...'}
+                    {bookingStatus === 'found' && 'Driver Found 🚗'}
+                    {bookingStatus === 'arriving' && `Driver arriving in ${eta} mins`}
+                  </p>
+                  <p className="text-xs text-zinc-500">Realtime booking updates enabled</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 backdrop-blur-md bg-black/40 border-b border-white/[0.05]">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="bg-amber-500 p-2 rounded-xl shadow-md transition-transform group-hover:rotate-6">
-              <Car size={20} className="text-black stroke-[2.5]" />
+      <nav className="sticky top-0 z-50 bg-black/40 backdrop-blur-2xl border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-3 rounded-2xl">
+              <Car className="text-black" size={22} />
             </div>
-            <span className="text-xl font-black tracking-wider text-amber-500">
-              CABGO
-            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-black text-amber-500">CABGO</h1>
+                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] px-2 py-1 rounded-full font-bold">
+                  PREMIUM
+                </div>
+              </div>
+              <p className="text-[11px] text-zinc-500">Luxury Ride Platform</p>
+            </div>
           </Link>
 
-          {/* DESKTOP NAV */}
-          <div className="hidden lg:flex items-center gap-8 text-sm font-medium">
-            {['Home', 'Rides', 'Drivers', 'About', 'Contact','Demo'].map((link, i) => (
-              <Link
-                key={i}
-                href={link === 'Home' ? '/' : `/${link.toLowerCase()}`}
-                className="text-zinc-400 hover:text-white transition-colors duration-200 relative py-1 group"
-              >
-                {link}
-                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-amber-500 transition-all duration-300 group-hover:w-full" />
-              </Link>
-            ))}
-
-            <Link href="/premium">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="ml-4 px-5 py-2.5 rounded-xl font-bold text-xs text-black bg-amber-500 shadow-md tracking-wide"
-              >
-                Premium 
-              </motion.button>
+          <div className="hidden lg:flex items-center gap-8">
+            <Link href="/" className="text-white font-semibold">Home</Link>
+            <Link href="/rides" className="text-zinc-400 hover:text-white">Rides</Link>
+            <Link href="/drivers" className="text-zinc-400 hover:text-white">Drivers</Link>
+            <Link href="/pricing" className="text-zinc-400 hover:text-white">Pricing</Link>
+            <Link href="/ride" className="text-zinc-400 hover:text-white">Track</Link>
+            <Link href="/reviews" className="text-zinc-400 hover:text-white">
+              Reviews
             </Link>
           </div>
 
-          {/* MOBILE TOGGLE */}
+          <div className="hidden lg:flex items-center gap-4">
+            {/* RIGHT SIDE NAVBAR ACTIONS */}
+            <div className="hidden lg:flex items-center gap-4">
+
+              {/* LIVE STATUS PILL */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-xl"
+              >
+                <div className="relative">
+                  <div className="w-3 h-3 rounded-full bg-green-400" />
+                  <div className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-70" />
+                </div>
+
+                <div>
+                  <p className="text-[10px] text-zinc-500 leading-none">
+                    LIVE STATUS
+                  </p>
+                  <p className="text-sm font-bold text-white leading-none mt-1">
+                    142 Drivers Online
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* PREMIUM MEMBERSHIP BUTTON */}
+
+
+            </div>
+          </div>
+
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="lg:hidden p-2 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/10"
+            className="lg:hidden bg-white/5 border border-white/10 p-3 rounded-xl"
           >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            {menuOpen ? <X /> : <Menu />}
           </button>
         </div>
-
-        {/* MOBILE MENU */}
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="lg:hidden overflow-hidden px-6 bg-black/95 border-b border-white/5"
-            >
-              <div className="flex flex-col gap-4 text-zinc-300 py-4 font-medium text-sm">
-                {['Home', 'Rides', 'Drivers', 'About', 'Contact'].map((name, i) => (
-                  <Link
-                    key={i}
-                    href={name === 'Home' ? '/' : `/${name.toLowerCase()}`}
-                    onClick={() => setMenuOpen(false)}
-                    className="hover:text-white transition py-1"
-                  >
-                    {name}
-                  </Link>
-                ))}
-                <Link href="/premium-rides" onClick={() => setMenuOpen(false)}>
-                  <div className="mt-2 text-center py-3 rounded-xl bg-amber-500 text-black font-bold text-xs">
-                    Premium Ride
-                  </div>
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </nav>
 
-      {/* HERO SECTION */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
-        <div className="relative h-[520px] md:h-[600px] rounded-[32px] overflow-hidden border border-white/[0.08] shadow-2xl bg-zinc-950">
+      {/* HERO */}
+      <section className="max-w-7xl mx-auto px-6 pt-10 pb-16 relative z-10">
+        <div className="relative h-[650px] rounded-[40px] overflow-hidden shadow-2xl">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, scale: 1.08 }}
+              animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.7 }}
+              transition={{ duration: 1 }}
               className="absolute inset-0"
             >
               <Image
-                src={slides[currentSlide].image}
-                alt="Cabgo Premium Car"
+                src={heroSlides[currentSlide].image}
+                alt="hero"
                 fill
+                className="object-cover"
                 priority
-                className="object-cover object-center brightness-90"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/50" />
-
-              {/* CONTENT CONTAINER */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-                <motion.div
-                  initial={{ y: -15, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="bg-pink-500/10 backdrop-blur-md border border-pink-500/20 px-4 py-1.5 rounded-full mb-6 flex items-center gap-2 text-xs font-semibold tracking-wide text-pink-400"
-                >
-                  <Sparkles size={13} className="animate-pulse" />
-                  Premium Ride Experience
-                </motion.div>
-
-                <motion.h1
-                  initial={{ scale: 0.95, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.1]"
-                >
-                  {slides[currentSlide].title}
-                  <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-cyan-400">
-                    {slides[currentSlide].subtitle}
-                  </span>
-                </motion.h1>
-
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-zinc-300/90 mt-5 text-xs sm:text-sm md:text-base max-w-xl font-light"
-                >
-                  Luxury cab booking experience with modern UI and realtime rides.
-                </motion.p>
-
-                {/* CALL TO ACTIONS WITH GLOW EFFECTS */}
-                <motion.div
-                  initial={{ y: 15, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="flex flex-row gap-4 mt-8"
-                >
-                  <Link href="/rides">
-                    <motion.button
-                      whileHover={{ scale: 1.05, boxShadow: '0px 0px 20px rgba(255, 70, 131, 0.4)' }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-[#ff4683] text-white px-6 sm:px-8 py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-all"
-                    >
-                      Book Ride
-                    </motion.button>
-                  </Link>
-
-                  <Link href="/premium-rides">
-                    <motion.button
-                      whileHover={{ scale: 1.05, boxShadow: '0px 0px 20px rgba(249, 115, 22, 0.4)' }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-orange-500 text-white px-6 sm:px-8 py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-all"
-                    >
-                      Premium Rides
-                    </motion.button>
-                  </Link>
-                </motion.div>
-              </div>
             </motion.div>
           </AnimatePresence>
-        </div>
 
-        {/* STATS SECTION WITH SPRING SCROLL */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6"
-        >
-          {stats.map((item, i) => {
-            const Icon = item.icon;
-            return (
-              <motion.div
-                key={i}
-                variants={itemVariants}
-                whileHover={{ y: -5, borderColor: 'rgba(255,255,255,0.1)' }}
-                className="bg-[#121214] border border-white/[0.03] p-5 sm:p-6 rounded-2xl flex flex-col justify-between transition-colors shadow-lg"
+          <div className="absolute inset-0 bg-black/65" />
+
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
+            <div className="bg-white/10 border border-white/10 backdrop-blur-xl px-4 py-2 rounded-full text-sm mb-6 flex items-center gap-2">
+              <Sparkles size={14} className="text-amber-400" />
+              Premium Ride Experience
+            </div>
+
+            <motion.h1
+              key={heroSlides[currentSlide].title}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-5xl md:text-8xl font-black leading-none"
+            >
+              {heroSlides[currentSlide].title}
+            </motion.h1>
+
+            <p className="text-zinc-300 mt-6 max-w-2xl text-lg">
+              {heroSlides[currentSlide].subtitle}
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4 mt-8">
+              <Link
+                href="/book-ride"
+                className="bg-gradient-to-r from-amber-500 to-orange-500 px-8 py-4 rounded-xl text-black font-bold hover:scale-105 transition inline-block"
               >
-                <Icon size={18} className={`${item.color} mb-4 stroke-[2.5]`} />
-                <div>
-                  <h2 className="text-2xl sm:text-3xl font-black tracking-tight">{item.value}</h2>
-                  <p className="text-zinc-500 text-[11px] sm:text-xs mt-1 font-medium tracking-wide">{item.label}</p>
+                Book Ride
+              </Link>
+              <button
+                onClick={() => setFleetOpen(true)}
+                className="border border-white/20 bg-white/5 px-8 py-4 rounded-xl hover:bg-white/10 transition"
+              >
+                Explore Fleet
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 w-full max-w-4xl">
+              {[
+                { icon: TrendingUp, title: '10K+', subtitle: 'Happy Riders' },
+                { icon: Clock3, title: '24/7', subtitle: 'Live Support' },
+                { icon: Shield, title: '100%', subtitle: 'Verified' },
+                { icon: Crown, title: '500+', subtitle: 'Luxury Cars' },
+              ].map((item, i) => (
+                <div key={i} className="bg-black/40 border border-white/10 backdrop-blur-xl rounded-2xl p-5">
+                  <item.icon className="text-amber-400 mb-3" size={20} />
+                  <h3 className="text-2xl font-black">{item.title}</h3>
+                  <p className="text-zinc-400 text-xs mt-1">{item.subtitle}</p>
                 </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-      </section>
-
-      {/* FEATURES SECTION */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-100px' }}
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"
-        >
-          {features.map((f, i) => {
-            const Icon = f.icon;
-            return (
-              <motion.div
-                key={i}
-                variants={itemVariants}
-                whileHover={{ y: -5, bg: '#16161a', border: '1px solid rgba(255,255,255,0.08)' }}
-                className="bg-[#121214] border border-white/[0.03] p-6 rounded-2xl transition-all shadow-md"
-              >
-                <Icon size={20} className="text-cyan-400 mb-4 stroke-" />
-                <h3 className="font-bold text-base sm:text-lg tracking-wide text-zinc-100">{f.title}</h3>
-                <p className="text-zinc-400 text-xs mt-2.5 leading-relaxed font-light">
-                  {f.desc}
-                </p>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-      </section>
-
-      {/* CTA BANNER */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="relative overflow-hidden bg-gradient-to-r from-pink-500/10 via-transparent to-cyan-500/10 border border-white/[0.05] py-14 px-8 rounded-[32px] text-center"
-        >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight">Ready To Ride?</h2>
-          <p className="text-zinc-400 text-xs sm:text-sm mt-3 max-w-sm mx-auto font-light">
-            Book your luxury ride instantly.
-          </p>
-        </motion.div>
-      </section>
-
-      {/* PREMIUM FOOTER WITH HOVER COLOR GLOWS */}
-      <footer className="border-t border-white/[0.06] bg-[#09090b]/90 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          <div className="space-y-4">
-            <h2 className="text-2xl font-black tracking-wider text-amber-500">
-              CABGO
-            </h2>
-            <p className="text-zinc-400 text-xs leading-relaxed font-light max-w-xs">
-              Premium ride booking experience with luxury, speed & safety.
-            </p>
-            {/* Added exact interactive states as requested */}
-            <div className="flex gap-4 pt-2 text-zinc-500">
-              <Globe size={17} className="hover:text-pink-400 transition-colors duration-200 cursor-pointer" />
-              <Send size={17} className="hover:text-cyan-400 transition-colors duration-200 cursor-pointer" />
-              <Link2 size={17} className="hover:text-blue-400 transition-colors duration-200 cursor-pointer" />
+              ))}
             </div>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-sm tracking-wider mb-4 text-zinc-200">Quick Links</h4>
-            <div className="flex flex-col gap-2.5 text-xs text-zinc-400 font-light">
-              <Link href="/rides" className="hover:text-white transition-colors">Rides</Link>
-              <Link href="/drivers" className="hover:text-white transition-colors">Drivers</Link>
-              <Link href="/premium-rides" className="hover:text-white transition-colors">Premium</Link>
-              <Link href="/about" className="hover:text-white transition-colors">About</Link>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-sm tracking-wider mb-4 text-zinc-200">Support</h4>
-            <div className="flex flex-col gap-2.5 text-xs text-zinc-400 font-light">
-              <span className="hover:text-white transition-colors cursor-pointer">Help Center</span>
-              <span className="hover:text-white transition-colors cursor-pointer">Safety</span>
-              <span className="hover:text-white transition-colors cursor-pointer">Terms</span>
-              <span className="hover:text-white transition-colors cursor-pointer">Privacy</span>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-sm tracking-wider mb-4 text-zinc-200">Stay Updated</h4>
-            <div className="flex items-center bg-white/[0.03] border border-white/[0.08] focus-within:border-amber-500/40 rounded-xl overflow-hidden p-1 transition-all">
-              <input
-                type="email"
-                placeholder="Enter email"
-                className="bg-transparent px-3 py-2 w-full outline-none text-xs text-white placeholder-zinc-500"
-              />
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-amber-500 text-black p-2.5 rounded-lg transition-colors flex items-center justify-center shrink-0"
-              >
-                <ArrowUpRight size={14} className="stroke-[2.5]" />
-              </motion.button>
-            </div>
-            <p className="text-zinc-500 text-[11px] mt-2.5 font-light">
-              Get offers & ride updates.
-            </p>
           </div>
         </div>
+      </section>
 
-        <div className="border-t border-white/[0.05] text-center py-5 text-zinc-600 text-xs font-light tracking-wide">
+      {/* PREMIUM FEATURES */}
+      <section className="max-w-7xl mx-auto px-6 py-12 relative z-10">
+        <div className="text-center mb-12">
+          <p className="text-amber-500 font-bold uppercase tracking-widest text-xs">Premium Experience</p>
+          <h2 className="text-4xl md:text-5xl font-black mt-3">Why Choose CABGO</h2>
+        </div>
+        <div className="grid md:grid-cols-4 gap-6">
+          {[
+            { icon: Wifi, title: 'Live Tracking', text: 'Realtime GPS tracking' },
+            { icon: Music4, title: 'Luxury Comfort', text: 'Premium interiors & music' },
+            { icon: Coffee, title: 'Executive Rides', text: 'Business class experience' },
+            { icon: Headphones, title: '24/7 Support', text: 'Instant customer support' },
+          ].map((item, i) => (
+            <motion.div key={i} whileHover={{ y: -6 }} className="bg-[#111113] border border-white/10 rounded-3xl p-7">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center">
+                <item.icon className="text-black" />
+              </div>
+              <h3 className="text-xl font-black mt-6">{item.title}</h3>
+              <p className="text-zinc-400 text-sm mt-3">{item.text}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* DRIVERS */}
+      <section className="max-w-7xl mx-auto px-6 py-12 relative z-10">
+        <div className="mb-10">
+          <p className="text-amber-500 uppercase tracking-wider text-xs font-bold">Professional Chauffeurs</p>
+          <h2 className="text-4xl font-black mt-2">Top Rated Drivers</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {drivers.map((d, i) => (
+            <motion.div key={i} whileHover={{ y: -6 }} className="bg-[#111113] border border-white/5 rounded-3xl p-6 relative">
+              <button onClick={() => toggleFavorite(d.name)} className="absolute top-4 right-4">
+                <Heart
+                  size={18}
+                  className={favorites.includes(d.name) ? 'text-pink-500 fill-pink-500' : 'text-zinc-500'}
+                />
+              </button>
+              <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${d.gradient} flex items-center justify-center text-xl font-black`}>
+                {d.avatar}
+              </div>
+              <div className="mt-5">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-black text-lg">{d.name}</h3>
+                  <BadgeCheck size={16} className="text-green-400" />
+                </div>
+                <p className="text-zinc-500 text-sm mt-1">{d.city} • {d.exp}</p>
+                <p className="text-zinc-400 text-sm mt-2">{d.car}</p>
+              </div>
+              <div className="mt-6 flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-black">₹{d.price}</p>
+                  <p className="text-xs text-zinc-500">Starting Price</p>
+                </div>
+                <div className="flex items-center gap-1 bg-white/5 px-3 py-2 rounded-xl">
+                  <Star size={14} className="text-amber-400 fill-amber-400" />
+                  <span className="font-bold text-sm">{d.rating}</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="max-w-7xl mx-auto px-6 py-12 relative z-10">
+        <div className="text-center mb-12">
+          <p className="text-amber-500 uppercase tracking-wider text-xs font-bold">Reviews</p>
+          <h2 className="text-4xl font-black mt-2">What Riders Say</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {testimonials.map((t, i) => (
+            <motion.div key={i} whileHover={{ y: -6 }} className="bg-[#111113] border border-white/10 rounded-3xl p-8">
+              <Quote className="text-amber-400 mb-5" />
+              <p className="text-zinc-300 text-sm leading-relaxed">{t.text}</p>
+              <div className="mt-6">
+                <h3 className="font-bold">{t.name}</h3>
+                <p className="text-zinc-500 text-xs mt-1">{t.city}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+        <div className="text-center mb-10">
+          <p className="text-amber-500 uppercase tracking-wider text-xs font-bold">Help Center</p>
+          <h2 className="text-4xl font-black mt-2">Frequently Asked Questions</h2>
+        </div>
+        <div className="space-y-4">
+          {faqs.map((faq, idx) => (
+            <div key={idx} className="bg-[#111113] border border-white/5 rounded-2xl overflow-hidden">
+              <button
+                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                className="w-full p-5 text-left flex items-center justify-between"
+              >
+                <span className="font-bold">{faq.q}</span>
+                <ChevronDown className={`transition ${openFaq === idx ? 'rotate-180 text-amber-500' : ''}`} />
+              </button>
+              <AnimatePresence>
+                {openFaq === idx && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                  >
+                    <p className="px-5 pb-5 text-zinc-400 text-sm">{faq.a}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FLEET MODAL */}
+      <AnimatePresence>
+        {fleetOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-xl flex items-center justify-center p-6"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="w-full max-w-6xl bg-[#111113] border border-white/10 rounded-[35px] p-8 overflow-hidden max-h-[90vh]"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <p className="text-amber-500 uppercase tracking-widest text-xs font-bold">CABGO Fleet</p>
+                  <h2 className="text-4xl font-black mt-2">Explore Luxury Fleet</h2>
+                </div>
+                <button
+                  onClick={() => setFleetOpen(false)}
+                  className="bg-white/5 border border-white/10 p-3 rounded-full"
+                >
+                  <X />
+                </button>
+              </div>
+
+              {/* ✅ SCROLLING CAROUSEL */}
+              {/* ✅ SCROLLING CAROUSEL */}
+              <div className="overflow-hidden">
+                <motion.div
+                  className="flex gap-6"
+                  style={{ width: 'max-content' }}
+                  animate={{ x: ['0%', '-50%', '0%'] }}
+                  transition={{
+                    x: {
+                      repeat: Infinity,
+                      repeatType: 'loop',
+                      duration: 14,
+                      ease: 'easeInOut',
+                    },
+                  }}
+                >
+                  {[...fleetCards, ...fleetCards].map((card, i) => (
+                    <div
+                      key={i}
+                      className={`bg-[#18181b] ${card.borderClass} rounded-3xl overflow-hidden w-[340px] flex-shrink-0`}
+                    >
+                      <img src={card.image} className="h-52 w-full object-cover" />
+                      <div className="p-6">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-2xl font-black">{card.title}</h3>
+                          {card.icon}
+                        </div>
+                        <p className="text-zinc-400 text-sm mt-2">{card.desc}</p>
+                        <button
+                          onClick={() => {
+                            setSelectedRide(card.ride);
+                            setFleetOpen(false);
+                            setBookingOpen(true);
+                          }}
+                          className={`w-full mt-6 ${card.btnClass}`}
+                        >
+                          Book {card.title}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
+
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* FOOTER */}
+      <footer className="border-t border-white/5 bg-[#0b0b0d] mt-10">
+        <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
+          <div className="col-span-2 md:col-span-1">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-3 rounded-xl">
+                <Car className="text-black" size={18} />
+              </div>
+              <h2 className="text-2xl font-black text-amber-500">CABGO</h2>
+            </div>
+            <p className="text-zinc-500 text-xs leading-relaxed mt-4">
+              Premium luxury cab booking platform with realtime ride tracking.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-bold text-sm mb-4">Quick Links</h3>
+            <div className="space-y-3 text-zinc-500 text-sm">
+              <Link href="/">Home</Link><br />
+              <Link href="/rides">Rides</Link><br />
+              <Link href="/drivers">Drivers</Link>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-bold text-sm mb-4">Services</h3>
+            <div className="space-y-3 text-zinc-500 text-sm">
+              <p>Economy Ride</p>
+              <p>Premium Ride</p>
+              <p>Luxury Ride</p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-bold text-sm mb-4">Emergency</h3>
+            <div className="bg-[#111113] border border-white/5 p-4 rounded-xl">
+              <p className="text-zinc-500 text-xs">24/7 Support Hotline</p>
+              <a href="tel:1800000000" className="text-amber-500 font-black mt-2 inline-flex items-center gap-2">
+                <PhoneCall size={14} />
+                +1800-CABGO
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="border-t border-white/5 py-6 text-center text-xs text-zinc-600">
           © {new Date().getFullYear()} CABGO. All rights reserved.
         </div>
       </footer>
-    </motion.main>
+
+    </main>
   );
 }
